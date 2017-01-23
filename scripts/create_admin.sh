@@ -1,3 +1,3 @@
 #!/bin/bash
 
-mongo stock_manage create_admin.js
+mongo manage-users create_admin.js

@@ -1,32 +1,18 @@
-const Pages = require('./pages');
-const Login = require('./login');
-const User = require('./user');
-const Stock = require('./stock');
-const Utils = require('./utils');
+const fs = require('fs');
+const path = require('path');
 
-exports.endpoints = [
-  Pages.index,
-  Pages.login,
-  Pages.register,
-  Login.login,
-  Login.logout,
-  Login.register,
-  User.getAll,
-  User.getOne,
-  User.create,
-  User.update,
-  User.remove,
-  User.me,
-  User.getItem,
-  User.addItem,
-  User.removeItem,
-  Stock.getAll,
-  Stock.getOne,
-  Stock.create,
-  Stock.update,
-  Stock.remove,
-  Utils.style,
-  Utils.police,
-  Utils.img,
-  Utils.scripts,
-];
+const basename = path.basename(__filename);
+const utils = require('./utils');
+
+const routes = () => fs.readdirSync(__dirname)
+    .filter(file => (file !== basename && file !== 'utils'))
+    .map(file => require(path.join(__dirname, file)));
+
+exports.register = (server, options, next) => {
+    routes().forEach(file => utils.addRoute(server, file));
+    next();
+};
+
+exports.register.attributes = {
+    name: 'base',
+};
